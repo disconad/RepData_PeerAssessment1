@@ -12,6 +12,7 @@ output:
 ```{r}
 activity<-read.csv('activity.csv')
 library(dplyr)
+library(lubridate)
 ```
 ## What is mean total number of steps taken per day?
 Calculate the total steps:
@@ -88,8 +89,21 @@ mean(totals$steps) - mean(totalsnew$steps)
 
 median(totals$steps) - median(totalsnew$steps)
 ```
-###What is the impact of imputing missing data on the estimates of the total daily number of steps?
-
 The impact of replacing the NA entries with the mean for the 5-minute interval, is a slight ajustment to the median to equal the mean.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+```{r}
+dotw <- weekdays(as.Date(fullact$date))
+dotw <- ifelse(test = dotw %in% c("Saturday", "Sunday"), yes="weekend", "weekday")
+fullact$dotw <- as.factor(dotw)
+head(fullact)
+```
+
+Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+
+```{r}
+library(ggplot2)
+ggplot(fullact)+geom_line(aes(fullact$interval,fullact$steps),colour='orange', alpha=0.8)+facet_wrap(~dotw,ncol=1)+xlab('Intervals')+ylab('Number of steps')
+```
