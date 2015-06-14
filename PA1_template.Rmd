@@ -10,9 +10,12 @@ output:
 
 ## Loading and preprocessing the data
 ```{r}
-activity<-read.csv('activity.csv')
+#Load libraries:
+library(ggplot2)
 library(dplyr)
 library(lubridate)
+#Load data:
+activity<-read.csv('activity.csv')
 ```
 ## What is mean total number of steps taken per day?
 Calculate the total steps:
@@ -104,6 +107,5 @@ head(fullact)
 Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
 ```{r}
-library(ggplot2)
 ggplot(fullact)+geom_line(aes(fullact$interval,fullact$steps),colour='orange', alpha=0.8)+facet_wrap(~dotw,ncol=1)+xlab('Intervals')+ylab('Number of steps')
 ```
