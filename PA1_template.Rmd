@@ -1,5 +1,7 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
+author: "Daniel Hicks"
+date: "Saturday, June 13, 2015"
 output: 
   html_document:
     keep_md: true
@@ -13,14 +15,17 @@ library(dplyr)
 ```
 ## What is mean total number of steps taken per day?
 Calculate the total steps:
+
 ```{r}
-totals<-summarise_each(group_by(na.omit(data), date), funs(sum))
+totals<-summarise_each(group_by(na.omit(activity), date), funs(sum))
 totals
 ```
+
 Create a histogram of the total number of steps taken each day:
 ```{r}
 hist(totals$steps, main = 'Total Steps', col = 'orange')
 ```
+
 Calculate and report the mean of the total number of steps taken per day:
 ```{r}
 mean(totals$steps)
@@ -31,9 +36,58 @@ median(totals$steps)
 ```
 ## What is the average daily activity pattern?
 
+Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis):
+
+```{r}
+stepinterval<-summarise_each(group_by(na.omit(activity), interval), funs(mean))
+plot(x=stepinterval$interval,y=stepinterval$steps, type = "l", col='orange', ylab='average number of steps taken')
+```
+
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?:
+```{r}
+stepinterval[which.max(stepinterval$steps), ]$interval
+```
 
 ## Imputing missing values
 
+Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+```{r}
+sum(is.na(activity$steps))
+```
+Replace each NA entry with the mean for the corresponding 5-minute interval.Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
+```{r}
+fullact<- activity %>% group_by(interval) %>% mutate(steps= replace(steps, is.na(steps), mean(steps, na.rm=TRUE)))
+
+```
+Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
+
+Calculate the total steps:
+
+```{r}
+totalsnew<-summarise_each(group_by(fullact, date), funs(sum))
+totalsnew
+```
+
+Create a histogram of the total number of steps taken each day:
+```{r}
+hist(totalsnew$steps, main = 'Total Steps', col = 'lightblue')
+```
+
+Calculate and report the mean of the total number of steps taken per day:
+```{r}
+mean(totalsnew$steps)
+```
+Calculate and report the median of the total number of steps taken per day:
+```{r}
+median(totalsnew$steps)
+```
+Do these values differ from the estimates from the first part of the assignment? 
+```{r}
+mean(totals$steps) - mean(totalsnew$steps)
+
+median(totals$steps) - median(totalsnew$steps)
+```
+What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
 ## Are there differences in activity patterns between weekdays and weekends?
