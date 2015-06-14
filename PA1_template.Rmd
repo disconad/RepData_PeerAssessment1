@@ -88,6 +88,8 @@ mean(totals$steps) - mean(totalsnew$steps)
 
 median(totals$steps) - median(totalsnew$steps)
 ```
-What is the impact of imputing missing data on the estimates of the total daily number of steps?
+###What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+The impact of replacing the NA entries with the mean for the 5-minute interval, is a slight ajustment to the median to equal the mean.
 
 ## Are there differences in activity patterns between weekdays and weekends?
